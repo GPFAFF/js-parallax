@@ -6,10 +6,9 @@ console.log("I am loaded 👀");
 // 3. Instead of getting window, should I be getting elements getBoundingRect();
 
 function offset(el) {
-  const rect = el.getBoundingClientRect(),
-  scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-  scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+  const posY = window.pageYOffset || document.documentElement.scrollTop;
+  const itemTop = posY + el.getBoundingClientRect().top;
+  return itemTop;
 }
 
 (function parallaxIt() {
@@ -30,7 +29,7 @@ function offset(el) {
   backgroundTargets.forEach((background) => {
     const target = background;
     retrieveSpeed = target.getAttribute('data-speed');
-    targetOffset = target.offsetTop;
+    targetOffset = target;
     backgrounds.push(target);
   })
 
@@ -39,6 +38,7 @@ function offset(el) {
     const target = item;
     retrieveSpeed = Number(target.getAttribute('data-speed'));
     targetOffset = offset(target);
+    console.log(targetOffset);
     elements.push(target);
   })
 
@@ -53,9 +53,9 @@ function offset(el) {
       // console.log(retrieveSpeed);
       // console.log(targetOffset);
 
-      let yPos = (targetOffset - scrollTop) / retrieveSpeed;
+      //let yPos = (scrollTop - targetOffset / Number(retrieveSpeed));
       //console.log('y', yPos)
-      target.style.transform =  `translate3d(0, ${yPos}px, 0)`;
+      //target.style.transform =  `translate3d(0, ${yPos}px, 0)`;
     })
 
     // loop through backgrounds array
