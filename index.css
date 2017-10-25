@@ -28,10 +28,22 @@ body, html {
 .taco {
   width: 200px;
   height: auto;
+  position: absolute;
+}
+
+.taco-one, .taco-three, .taco-five, .taco-seven, .taco-nine, .taco-eleven {
+  top: 0;
+  left: 180px;
+}
+
+.taco-two, .taco-four, .taco-six, .taco-eight, .taco-ten, .taco-twelve {
+  top: -80px;
+  left: 280px;
 }
 
 h2 {
-  display: flex;
+  display: block;
+  text-align: center;
 }
 
 .one, .six {

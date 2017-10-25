@@ -1,5 +1,17 @@
 console.log("I am loaded 👀");
 
+// TO DO:
+// 1. Speeds not working right
+// 2. Improve functionality
+// 3. Instead of getting window, should I be getting elements getBoundingRect();
+
+function offset(el) {
+  const rect = el.getBoundingClientRect(),
+  scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+  scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+}
+
 (function parallaxIt() {
   // create variables
   const window = document.defaultView;
@@ -17,9 +29,8 @@ console.log("I am loaded 👀");
   // loop through backgrounds
   backgroundTargets.forEach((background) => {
     const target = background;
-    retrieveSpeed = Number(target.getAttribute('data-speed'));
+    retrieveSpeed = target.getAttribute('data-speed');
     targetOffset = target.offsetTop;
-
     backgrounds.push(target);
   })
 
@@ -27,7 +38,7 @@ console.log("I am loaded 👀");
   parallaxTargets.forEach((item) => {
     const target = item;
     retrieveSpeed = Number(target.getAttribute('data-speed'));
-    targetOffset = target.offsetTop;
+    targetOffset = offset(target);
     elements.push(target);
   })
 
@@ -37,18 +48,19 @@ console.log("I am loaded 👀");
     scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
     // loop through targets array
-    elements.map((target) => {
-      console.log(target.getAttribute('data-speed'));
-      console.log(targetOffset);
-      let yPos = targetOffset - (scrollTop / retrieveSpeed);
-      console.log(scrollTop / retrieveSpeed)
-      //console.log(yPos);
-      target.style.top =  `${yPos}px`;
+    elements.forEach((target) => {
+      // console.log(scrollTop);
+      // console.log(retrieveSpeed);
+      // console.log(targetOffset);
+
+      let yPos = (targetOffset - scrollTop) / retrieveSpeed;
+      //console.log('y', yPos)
+      target.style.transform =  `translate3d(0, ${yPos}px, 0)`;
     })
 
     // loop through backgrounds array
     backgrounds.forEach((target) => {
-      let yPos = -((scrollTop - targetOffset) / retrieveSpeed);
+      let yPos = -((scrollTop - targetOffset) / Number(retrieveSpeed));
       target.style.backgroundPosition = `50% ${yPos}px`
     });
   })
