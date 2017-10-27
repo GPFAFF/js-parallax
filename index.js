@@ -9,9 +9,8 @@ function offset(el) {
   const posY = window.pageYOffset || document.documentElement.scrollTop;
   const itemTop = posY + (el.getBoundingClientRect().top);
   const itemHeight = el.clientHeight || el.offsetHeight || el.scrollHeight;
-  const retrieveSpeed = Number(el.getAttribute('data-speed'));
 
-  const percentage = retrieveSpeed / (posY - itemTop + screenY) / (innerHeight + posY);
+  const percentage = Math.round((posY - itemTop + screenY) / (innerHeight + posY) * 10);
 
   return percentage;
 
@@ -36,14 +35,18 @@ function offset(el) {
   // loop through backgrounds
   backgroundTargets.forEach((background) => {
     const target = background;
-    targetOffset = target;
+    const retrieveSpeed = Number(target.getAttribute('data-speed'));
+    targetOffset = offset(target);
+    Math.round((retrieveSpeed * (100 * (1 - targetOffset))) * 100);
     backgrounds.push(target);
   })
 
   // loop through targets
   parallaxTargets.forEach((item) => {
     const target = item;
+    const retrieveSpeed = Number(target.getAttribute('data-speed'));
     targetOffset = offset(target);
+    Math.round((retrieveSpeed * (100 * (1 - targetOffset))) * 10);
     elements.push(target);
   })
 
@@ -55,13 +58,13 @@ function offset(el) {
     // loop through targets array
     elements.forEach((target) => {
       console.log(target, scrollTop)
-      let yPos = offset(target) * 10000;
+      let yPos = offset(target);
       target.style.transform =  `translate3d(0, ${yPos}px, 0)`;
     })
 
     // loop through backgrounds array
     backgrounds.forEach((target) => {
-      let yPos = -(offset(target) * 10000);
+      let yPos = -(offset(target));
       console.log(yPos);
       target.style.backgroundPosition = `50% ${yPos}px`
     });
