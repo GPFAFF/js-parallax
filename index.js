@@ -5,12 +5,17 @@ console.log("I am loaded 👀");
 // 2. Improve functionality
 // 3. Instead of getting window, should I be getting elements getBoundingRect();
 
-function offset(target) {
+const offset = (target)  => {
+  const screenY = 0;
   const posY = window.pageYOffset || document.documentElement.scrollTop;
   const itemTop = posY + target.getBoundingClientRect().top;
   const itemHeight = target.clientHeight || target.offsetHeight ||target.scrollHeight;
-  const retrieveSpeed = Number(target.getAttribute('data-speed'));
-  const percentage = Math.round(((posY - itemTop + screenY) / (innerHeight + screenY) * 100) / retrieveSpeed);
+
+  // get speed or set default
+  const retrieveSpeed = Number(target.getAttribute('data-speed')) || Number(target.setAttribute('data-speed', '4'));
+
+  // create percentage for scrolling
+  const percentage = Math.round(((posY - itemTop + screenY) / (innerHeight + screenY) * 100) / retrieveSpeed) * 3;
   console.log(percentage);
 
 
@@ -18,7 +23,18 @@ function offset(target) {
 
 }
 
-(function parallaxIt() {
+// Create requestAnimationFrame
+
+const rAF = window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.msRequestAnimationFrame ||
+  window.oRequestAnimationFrame ||
+  function(callback) {
+    setTimeout(callback, 1000 / 60);
+  };
+
+const parallaxIt = () => {
   // create variables
   const window = document.defaultView;
   // this is a var so its declaration can get hoisted to top in window scroll event.
@@ -52,7 +68,7 @@ function offset(target) {
     // loop through targets array
     elements.forEach((target) => {
       let yPos = offset(target);
-      target.style.transform =  `translate3d(0, ${yPos}px, 0)`;
+      target.style.transform =  `translate3d(0, ${yPos}%, 0)`;
     })
 
     // loop through backgrounds array
@@ -61,4 +77,6 @@ function offset(target) {
       target.style.backgroundPosition = `50% ${yPos}px`
     });
   })
-})();
+};
+
+rAF(parallaxIt);
