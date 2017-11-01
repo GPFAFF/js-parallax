@@ -5,21 +5,26 @@ console.log("I am loaded 👀");
 // 2. Improve functionality
 // 3. Instead of getting window, should I be getting elements getBoundingRect();
 
+const isInView = (target) => {
+  const distance = target.getBoundingClientRect();
+  return (
+    distance.top >= 0 && distance.left >= 0 && distance.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    distance.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
 const offset = (target)  => {
-  const screenY = 0;
-  const posY = window.pageYOffset || document.documentElement.scrollTop;
-  const itemTop = posY + target.getBoundingClientRect().top;
-  const itemHeight = target.clientHeight || target.offsetHeight ||target.scrollHeight;
+  const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+  const itemTop = target.getBoundingClientRect().top;
 
   // get speed or set default
   const retrieveSpeed = Number(target.getAttribute('data-speed')) || Number(target.setAttribute('data-speed', '4'));
 
   // create percentage for scrolling
-  const percentage = Math.round(((posY - itemTop + screenY) / (innerHeight + screenY) * 100) / retrieveSpeed) * 3;
-  console.log(percentage);
+  const percentage = Math.round(scrollPosition / (itemTop + retrieveSpeed));
 
-
-  return Math.round((percentage));
+  return percentage;
 
 }
 
@@ -67,14 +72,20 @@ const parallaxIt = () => {
 
     // loop through targets array
     elements.forEach((target) => {
-      let yPos = offset(target);
-      target.style.transform =  `translate3d(0, ${yPos}%, 0)`;
-    })
+
+      if (isInView(target)) {
+          let yPos = offset(target);
+          target.style.transform =  `translate3d(0, ${yPos}px, 0)`;
+          target.style.transition = '200ms ease-in';
+        }
+      })
 
     // loop through backgrounds array
     backgrounds.forEach((target) => {
-      let yPos = -(offset(target));
-      target.style.backgroundPosition = `50% ${yPos}px`
+      if (isInView(target)) {
+        let yPos = -(offset(target));
+        target.style.backgroundPosition = `50% ${yPos}px`
+      }
     });
   })
 };
